@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
-import "./styles/products.css";
+import "../styles/product.css";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -35,30 +34,27 @@ export default function Products() {
   );
 
   return (
-    <>
-      <Navbar loggedIn={false} />
-      <div className="products-page">
-        <input
-          className="search"
-          type="text"
-          placeholder="Search products..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-        <div className="products-grid">
-          {filtered.length > 0 ? (
-            filtered.map(product => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAdd={addToCart}
-              />
-            ))
-          ) : (
-            <p>No products found.</p>
-          )}
-        </div>
+    <div className="products-page">
+      <input
+        className="search"
+        type="text"
+        placeholder="Search products..."
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+      />
+      <div className="products-grid">
+        {filtered.length > 0 ? (
+          filtered.map(product => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onAdd={addToCart}
+            />
+          ))
+        ) : (
+          <p>No products found.</p>
+        )}
       </div>
-    </>
+    </div>
   );
 }
