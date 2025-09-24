@@ -12,6 +12,12 @@
   color: #555;
 }
 
+.empty-cart-icon {
+  display: block;
+  margin: 20px auto 20px auto;
+  color: #0366d6; /* ShopSphere blue */
+}
+
 .cart-items {
   display: flex;
   flex-direction: column;
@@ -25,14 +31,20 @@
   align-items: center;
   border: 1px solid #ddd;
   padding: 12px;
-  border-radius: 6px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: box-shadow 0.2s;
+}
+
+.cart-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .cart-item img {
   width: 80px;
   height: 80px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .cart-item-info {
@@ -47,6 +59,7 @@
 
 .cart-item-info p {
   margin: 0 0 8px 0;
+  font-weight: bold;
 }
 
 .quantity-controls {
@@ -57,19 +70,27 @@
 
 .quantity-controls span {
   font-size: 16px;
-  width: 24px;
+  width: 28px;
   text-align: center;
 }
 
 .quantity-controls svg {
   cursor: pointer;
   color: #0366d6;
+  transition: transform 0.2s;
+}
+
+.quantity-controls svg:hover {
+  transform: scale(1.2);
 }
 
 .order-summary {
   border-top: 2px solid #ddd;
   padding-top: 16px;
   text-align: right;
+  background-color: #f1f8ff;
+  padding: 20px;
+  border-radius: 8px;
 }
 
 .order-summary h3 {
@@ -79,16 +100,18 @@
 
 .order-summary p {
   margin: 4px 0;
+  font-weight: 500;
 }
 
 .order-summary button {
   margin-top: 12px;
-  padding: 10px 16px;
+  padding: 10px 20px;
   background-color: #0366d6;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .order-summary button:hover {

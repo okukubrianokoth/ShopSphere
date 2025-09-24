@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import Navbar from "../components/Navbar";
 import { User, Mail, Lock } from "lucide-react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import "./styles/auth.css";
+import "../styles/login.css";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -57,76 +56,73 @@ export default function AuthPage() {
   };
 
   return (
-    <>
-      <Navbar loggedIn={false} />
-      <div className="auth-page">
-        <div className="tabs">
-          <button
-            className={isLogin ? "active" : ""}
-            onClick={() => setIsLogin(true)}
-          >
-            Login
-          </button>
-          <button
-            className={!isLogin ? "active" : ""}
-            onClick={() => setIsLogin(false)}
-          >
-            Signup
-          </button>
-        </div>
-
-        {isLogin ? (
-          <Formik
-            initialValues={loginInitial}
-            validationSchema={loginSchema}
-            onSubmit={handleLogin}
-          >
-            <Form className="auth-form">
-              <label>
-                <User size={18} /> Email or Username
-                <Field type="text" name="emailOrUsername" />
-                <ErrorMessage name="emailOrUsername" component="div" className="error" />
-              </label>
-
-              <label>
-                <Lock size={18} /> Password
-                <Field type="password" name="password" />
-                <ErrorMessage name="password" component="div" className="error" />
-              </label>
-
-              <button type="submit">Login</button>
-            </Form>
-          </Formik>
-        ) : (
-          <Formik
-            initialValues={signupInitial}
-            validationSchema={signupSchema}
-            onSubmit={handleSignup}
-          >
-            <Form className="auth-form">
-              <label>
-                <User size={18} /> Username
-                <Field type="text" name="username" />
-                <ErrorMessage name="username" component="div" className="error" />
-              </label>
-
-              <label>
-                <Mail size={18} /> Email
-                <Field type="email" name="email" />
-                <ErrorMessage name="email" component="div" className="error" />
-              </label>
-
-              <label>
-                <Lock size={18} /> Password
-                <Field type="password" name="password" />
-                <ErrorMessage name="password" component="div" className="error" />
-              </label>
-
-              <button type="submit">Signup</button>
-            </Form>
-          </Formik>
-        )}
+    <div className="auth-page">
+      <div className="tabs">
+        <button
+          className={isLogin ? "active" : ""}
+          onClick={() => setIsLogin(true)}
+        >
+          Login
+        </button>
+        <button
+          className={!isLogin ? "active" : ""}
+          onClick={() => setIsLogin(false)}
+        >
+          Signup
+        </button>
       </div>
-    </>
+
+      {isLogin ? (
+        <Formik
+          initialValues={loginInitial}
+          validationSchema={loginSchema}
+          onSubmit={handleLogin}
+        >
+          <Form className="auth-form">
+            <label>
+              <User size={18} /> Email or Username
+              <Field type="text" name="emailOrUsername" />
+              <ErrorMessage name="emailOrUsername" component="div" className="error" />
+            </label>
+
+            <label>
+              <Lock size={18} /> Password
+              <Field type="password" name="password" />
+              <ErrorMessage name="password" component="div" className="error" />
+            </label>
+
+            <button type="submit">Login</button>
+          </Form>
+        </Formik>
+      ) : (
+        <Formik
+          initialValues={signupInitial}
+          validationSchema={signupSchema}
+          onSubmit={handleSignup}
+        >
+          <Form className="auth-form">
+            <label>
+              <User size={18} /> Username
+              <Field type="text" name="username" />
+              <ErrorMessage name="username" component="div" className="error" />
+            </label>
+
+            <label>
+              <Mail size={18} /> Email
+              <Field type="email" name="email" />
+              <ErrorMessage name="email" component="div" className="error" />
+            </label>
+
+            <label>
+              <Lock size={18} /> Password
+              <Field type="password" name="password" />
+              <ErrorMessage name="password" component="div" className="error" />
+            </label>
+
+            <button type="submit">Signup</button>
+          </Form>
+        </Formik>
+      )}
+    </div>
   );
 }

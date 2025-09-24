@@ -1,5 +1,5 @@
 import React from "react";
-import "./styles/productcard.css";
+import "/home/walid/ShopSphere/frontend/src/styles/productcard.css";
 import { Plus, Minus } from "lucide-react";
 
 export default function ProductCard({ product, onAdd, onRemove }) {

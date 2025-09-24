@@ -1,30 +1,32 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, User } from "lucide-react";
-import "./styles/navbar.css";
+import "/home/walid/ShopSphere/frontend/src/styles/navbar.css";
 
-export default function Navbar({ loggedIn, onLogout }) {
+export default function Navbar({ loggedIn }) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/auth");
+  };
+
   return (
-    <header className="nav">
-      <div className="nav-left">
-        <Link to="/" className="brand">ShopSphere</Link>
-      </div>
-      <nav className="nav-right">
+    <nav className="navbar">
+      <Link to="/" className="logo">ShopSphere</Link>
+      <div className="nav-links">
         <Link to="/">Home</Link>
         <Link to="/products">Products</Link>
         <Link to="/cart"><ShoppingCart size={20} /></Link>
         {loggedIn ? (
           <>
             <Link to="/profile"><User size={20} /></Link>
-            <button onClick={onLogout}>Logout</button>
+            <button className="logout-btn" onClick={handleLogout}>Logout</button>
           </>
         ) : (
-          <>
-            <Link to="/login">Login</Link>
-            <Link to="/signup">Signup</Link>
-          </>
+          <Link to="/auth">Login/Signup</Link>
         )}
-      </nav>
-    </header>
+      </div>
+    </nav>
   );
 }
