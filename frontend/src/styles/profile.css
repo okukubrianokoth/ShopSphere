@@ -1,0 +1,63 @@
+.profile-page {
+  max-width: 800px;
+  margin: auto;
+  padding: 24px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.profile-page h2 {
+  color: #0366d6;
+  margin-bottom: 24px;
+}
+
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.profile-actions button {
+  padding: 10px 16px;
+  background-color: #0366d6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.profile-actions button:hover {
+  background-color: #024ea2;
+}
+
+.update-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.update-form input {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 300px;
+}
+
+.orders-list {
+  margin-top: 24px;
+}
+
+.order-item {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.order-item ul {
+  margin: 4px 0 0 16px;
+}
