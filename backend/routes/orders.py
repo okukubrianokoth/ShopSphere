@@ -8,7 +8,7 @@ from sqlalchemy.orm import joinedload
 
 orders_bp = Blueprint("orders", __name__)
 
-# GET all completed orders for the logged-in user
+
 @orders_bp.route("/", methods=["GET"])
 @jwt_required()
 def get_orders():
@@ -71,7 +71,6 @@ def create_order():
     
     return jsonify(order_schema.dump(created_order)), 201  
 
-# UPDATE order status
 @orders_bp.route("/<int:order_id>", methods=["PUT"])
 @jwt_required()
 def update_order(order_id):
@@ -82,7 +81,6 @@ def update_order(order_id):
     db.session.commit()
     return jsonify(order_schema.dump(order)), 200  
 
-# DELETE an order
 @orders_bp.route("/<int:order_id>", methods=["DELETE"])
 @jwt_required()
 def delete_order(order_id):

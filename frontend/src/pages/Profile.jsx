@@ -11,7 +11,6 @@ export default function Profile() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Get current user from localStorage
   const getCurrentUser = () => {
     const userData = localStorage.getItem("user");
     if (!userData) return null;
@@ -28,7 +27,6 @@ export default function Profile() {
     return parsedData.access_token;
   };
 
-  // Check if user is logged in, redirect if not
   useEffect(() => {
     const currentUser = getCurrentUser();
     const token = getToken();
@@ -42,7 +40,6 @@ export default function Profile() {
     setUpdatedUser(currentUser);
   }, [navigate]);
 
-  // Fetch current user profile from backend
   useEffect(() => {
     const token = getToken();
     if (!token) return;
@@ -78,7 +75,6 @@ export default function Profile() {
       } catch (err) {
         console.error("Profile fetch error:", err);
         setError("Failed to load profile: " + err.message);
-        // Don't redirect here, use cached user data
       } finally {
         setLoading(false);
       }
@@ -86,8 +82,6 @@ export default function Profile() {
     
     fetchProfile();
   }, []);
-
-  // Fetch last 3 completed orders for this user
   useEffect(() => {
     const token = getToken();
     if (!token) return;
@@ -120,8 +114,7 @@ export default function Profile() {
         setOrders(data);
       } catch (err) {
         console.error("Orders fetch error:", err);
-        // Don't show error for orders, just log it
-        setOrders([]); // Set empty array so UI shows "No orders"
+        setOrders([]);
       }
     };
     
