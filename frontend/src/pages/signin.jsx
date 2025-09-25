@@ -1,27 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { User, Mail, Lock } from "lucide-react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "/home/walid/ShopSphere/frontend/src/context/AuthContext.jsx";
 import "../styles/login.css";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
 
-  // Login form
+  
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate("/"); 
+    }
+  }, [navigate, isAuthenticated]);
+
+  
   const loginInitial = { emailOrUsername: "", password: "" };
   const loginSchema = Yup.object({
     emailOrUsername: Yup.string().required("Required"),
     password: Yup.string().required("Required"),
   });
+
   const handleLogin = async (values) => {
     try {
-      const res = await fetch(`http://localhost:5555/api/users/login?identifier=${values.emailOrUsername}&password=${values.password}`);
+      const res = await fetch("http://localhost:5555/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+
+      const data = await res.json();
+
       if (res.ok) {
-        const data = await res.json();
-        localStorage.setItem("user", JSON.stringify(data));
+        login(data); 
         alert("Login successful!");
+        navigate("/");
       } else {
-        alert("Invalid credentials.");
+        alert(data.error || "Invalid credentials.");
       }
     } catch (err) {
       console.error(err);
@@ -29,25 +48,28 @@ export default function AuthPage() {
     }
   };
 
-  // Signup form
   const signupInitial = { username: "", email: "", password: "" };
   const signupSchema = Yup.object({
     username: Yup.string().min(3, "Min 3 chars").required("Required"),
     email: Yup.string().email("Invalid email").required("Required"),
     password: Yup.string().min(6, "Min 6 chars").required("Required"),
   });
+
   const handleSignup = async (values) => {
     try {
-      const res = await fetch("http://localhost:5555/api/users/signup", {
+      const res = await fetch("http://localhost:5555/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
+
+      const data = await res.json();
+
       if (res.ok) {
-        alert("Account created successfully!");
+        alert("Account created successfully! Please login.");
         setIsLogin(true);
       } else {
-        alert("Signup failed. Try a different email/username.");
+        alert(data.error || "Signup failed.");
       }
     } catch (err) {
       console.error(err);
