@@ -8,7 +8,8 @@ from backend.models import db, User
 from backend.schemas import user_schema
 from backend.utils.auth_utils import hash_password, check_password
 
-auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
+# Remove url_prefix here
+auth_bp = Blueprint("auth", __name__)
 
 
 # Register: create new user
@@ -22,7 +23,6 @@ def register():
     if not username or not email or not password:
         return jsonify({"error": "username, email and password are required"}), 400
 
-    # check duplicates
     if User.query.filter((User.email == email) | (User.username == username)).first():
         return jsonify({"error": "User with this email or username already exists"}), 400
 
@@ -43,21 +43,18 @@ def register():
         return jsonify({"error": "Failed to create user", "detail": str(e)}), 500
 
 
-# Login: issue JWT token
+# Login: issue JWT token (email or username)
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json() or {}
-    email = data.get("email")
+    identifier = data.get("emailOrUsername")
     password = data.get("password")
 
-    if not email or not password:
-        return jsonify({"error": "email and password required"}), 400
+    if not identifier or not password:
+        return jsonify({"error": "emailOrUsername and password required"}), 400
 
-    user = User.query.filter_by(email=email).first()
-    if not user:
-        return jsonify({"error": "Invalid credentials"}), 401
-
-    if not check_password(user.password, password):
+    user = User.query.filter((User.email == identifier) | (User.username == identifier)).first()
+    if not user or not check_password(user.password, password):
         return jsonify({"error": "Invalid credentials"}), 401
 
     access_token = create_access_token(identity=user.id, expires_delta=timedelta(days=7))
@@ -70,7 +67,7 @@ def login():
 def me():
     user_id = get_jwt_identity()
     user = User.query.get_or_404(user_id)
-    return user_schema.jsonify(user), 200
+    return jsonify(user_schema.dump(user)), 200  # Fixed: use jsonify + dump
 
 
 # Update current user's profile
@@ -87,7 +84,6 @@ def update_me():
     password = data.get("password")
 
     if username:
-        # ensure uniqueness
         if User.query.filter(User.username == username, User.id != user.id).first():
             return jsonify({"error": "Username already used"}), 400
         user.username = username
@@ -102,7 +98,7 @@ def update_me():
 
     try:
         db.session.commit()
-        return user_schema.jsonify(user), 200
+        return jsonify(user_schema.dump(user)), 200  # Fixed: use jsonify + dump
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Could not update profile", "detail": str(e)}), 500

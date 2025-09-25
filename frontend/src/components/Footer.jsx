@@ -7,13 +7,11 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer-container">
 
-        {/* Company Info */}
         <div className="footer-section">
           <h3>ShopSphere</h3>
           <p>Shop Smart, Live Better</p>
         </div>
 
-        {/* Contact */}
         <div className="footer-section">
           <h4>Contact Us</h4>
           <p><Mail size={16} /> <a href="mailto:contact@shopsphere.example">contact@shopsphere.example</a></p>
@@ -21,7 +19,6 @@ export default function Footer() {
           <p><MapPin size={16} /> 123 Blue Street, Nairobi, Kenya</p>
         </div>
 
-        {/* Social Links */}
         <div className="footer-section">
           <h4>Follow Us</h4>
           <p className="social-links">
@@ -32,7 +29,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom Copyright */}
       <div className="footer-bottom">
         <p>© {new Date().getFullYear()} ShopSphere. All rights reserved.</p>
       </div>

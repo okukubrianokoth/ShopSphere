@@ -1,19 +1,17 @@
 import React from "react";
 import { Info, Box, Star, Truck, CreditCard, Smile } from "lucide-react";
-import Footer from "../components/Footer"; // import Footer component
+import Footer from "../components/Footer"; 
 import "../styles/home.css";
 
 export default function Home() {
   return (
     <div className="home-page">
-      {/* Hero Section */}
       <header className="hero-section">
         <h1>Welcome to ShopSphere</h1>
         <p>Your one-stop shop for everything smart and convenient!</p>
         <button className="shop-now" onClick={() => window.location.href = "/products"}>Shop Now</button>
       </header>
 
-      {/* Company Info */}
       <section className="company-info">
         <h2>About Us</h2>
         <div className="info-cards">
@@ -40,7 +38,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="features-section">
         <h2>Why ShopSphere?</h2>
         <div className="features-cards">
@@ -62,7 +59,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
       <section className="testimonials-section">
         <h2>What Our Customers Say</h2>
         <div className="testimonial-cards">
@@ -80,8 +76,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
       <Footer />
     </div>
   );

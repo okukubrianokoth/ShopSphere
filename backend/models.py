@@ -1,3 +1,4 @@
+# backend/models.py
 from datetime import datetime
 from backend.app import db
 
@@ -10,9 +11,6 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     orders = db.relationship("Order", backref="user", lazy=True)
-    reviews = db.relationship("Review", backref="user", lazy=True)
-    likes = db.relationship("Like", backref="user", lazy=True)
-    cart_items = db.relationship("CartItem", backref="user", lazy=True)
 
 
 class Product(db.Model):
@@ -25,26 +23,15 @@ class Product(db.Model):
     image_url = db.Column(db.String(255), nullable=True)
     category = db.Column(db.String(80), nullable=True)
 
-    reviews = db.relationship("Review", backref="product", lazy=True)
-    likes = db.relationship("Like", backref="product", lazy=True)
     order_items = db.relationship("OrderItem", backref="product", lazy=True)
-
-
-class CartItem(db.Model):
-    __tablename__ = "cart_item"
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
-    quantity = db.Column(db.Integer, default=1)
-    added_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 class Order(db.Model):
     __tablename__ = "order"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    status = db.Column(db.String(50), default="pending")
     total_price = db.Column(db.Float, default=0.0)
+    status = db.Column(db.String(50), default="pending")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     items = db.relationship("OrderItem", backref="order", lazy=True)
@@ -57,20 +44,3 @@ class OrderItem(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
     quantity = db.Column(db.Integer, default=1)
     price = db.Column(db.Float, nullable=False)
-
-
-class Review(db.Model):
-    __tablename__ = "review"
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    rating = db.Column(db.Integer, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class Like(db.Model):
-    __tablename__ = "like"
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
