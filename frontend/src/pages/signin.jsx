@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { User, Mail, Lock } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
@@ -8,17 +8,16 @@ import "../styles/login.css";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
 
-  
   useEffect(() => {
     if (isAuthenticated()) {
       navigate("/"); 
     }
   }, [navigate, isAuthenticated]);
 
-  
   const loginInitial = { emailOrUsername: "", password: "" };
   const loginSchema = Yup.object({
     emailOrUsername: Yup.string().required("Required"),
@@ -55,7 +54,7 @@ export default function AuthPage() {
     password: Yup.string().min(6, "Min 6 chars").required("Required"),
   });
 
-  const handleSignup = async (values) => {
+  const handleSignup = async (values, { resetForm }) => {
     try {
       const res = await fetch("http://localhost:5555/api/users/register", {
         method: "POST",
@@ -67,7 +66,10 @@ export default function AuthPage() {
 
       if (res.ok) {
         alert("Account created successfully! Please login.");
-        setIsLogin(true);
+        resetForm(); // Clear the signup form
+        setIsLogin(true); // Switch to login tab
+        // Reset password visibility state
+        setShowPassword(false);
       } else {
         alert(data.error || "Signup failed.");
       }
@@ -77,18 +79,57 @@ export default function AuthPage() {
     }
   };
 
+  const PasswordField = ({ name, placeholder = "Password" }) => (
+    <Field name={name}>
+      {({ field }) => (
+        <div style={{ position: 'relative' }}>
+          <input
+            {...field}
+            type={showPassword ? "text" : "password"}
+            placeholder={placeholder}
+            style={{ paddingRight: '40px' }}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            style={{
+              position: 'absolute',
+              right: '10px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              border: 'none',
+              background: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
+      )}
+    </Field>
+  );
+
   return (
     <div className="auth-page">
       <div className="tabs">
         <button
           className={isLogin ? "active" : ""}
-          onClick={() => setIsLogin(true)}
+          onClick={() => {
+            setIsLogin(true);
+            setShowPassword(false); // Reset password visibility when switching tabs
+          }}
         >
           Login
         </button>
         <button
           className={!isLogin ? "active" : ""}
-          onClick={() => setIsLogin(false)}
+          onClick={() => {
+            setIsLogin(false);
+            setShowPassword(false); // Reset password visibility when switching tabs
+          }}
         >
           Signup
         </button>
@@ -96,6 +137,7 @@ export default function AuthPage() {
 
       {isLogin ? (
         <Formik
+          key="login" // Force re-render when switching tabs to clear autofill
           initialValues={loginInitial}
           validationSchema={loginSchema}
           onSubmit={handleLogin}
@@ -103,13 +145,17 @@ export default function AuthPage() {
           <Form className="auth-form">
             <label>
               <User size={18} /> Email or Username
-              <Field type="text" name="emailOrUsername" />
+              <Field 
+                type="text" 
+                name="emailOrUsername" 
+                autoComplete="username" // Help browsers with proper autofill
+              />
               <ErrorMessage name="emailOrUsername" component="div" className="error" />
             </label>
 
             <label>
               <Lock size={18} /> Password
-              <Field type="password" name="password" />
+              <PasswordField name="password" />
               <ErrorMessage name="password" component="div" className="error" />
             </label>
 
@@ -118,6 +164,7 @@ export default function AuthPage() {
         </Formik>
       ) : (
         <Formik
+          key="signup" // Force re-render when switching tabs to clear autofill
           initialValues={signupInitial}
           validationSchema={signupSchema}
           onSubmit={handleSignup}
@@ -125,19 +172,27 @@ export default function AuthPage() {
           <Form className="auth-form">
             <label>
               <User size={18} /> Username
-              <Field type="text" name="username" />
+              <Field 
+                type="text" 
+                name="username" 
+                autoComplete="username" // Help browsers with proper autofill
+              />
               <ErrorMessage name="username" component="div" className="error" />
             </label>
 
             <label>
               <Mail size={18} /> Email
-              <Field type="email" name="email" />
+              <Field 
+                type="email" 
+                name="email" 
+                autoComplete="email" // Help browsers with proper autofill
+              />
               <ErrorMessage name="email" component="div" className="error" />
             </label>
 
             <label>
               <Lock size={18} /> Password
-              <Field type="password" name="password" />
+              <PasswordField name="password" />
               <ErrorMessage name="password" component="div" className="error" />
             </label>
 
