@@ -48,18 +48,54 @@
   padding: 8px 12px;
   border-radius: 6px;
   border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.auth-form button {
+/* Password field container styling */
+.auth-form label > div {
+  position: relative;
+  margin-top: 6px;
+}
+
+.auth-form label > div input {
+  margin-top: 0;
+  padding-right: 40px;
+}
+
+/* Eye icon button styling */
+.auth-form label > div button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.auth-form label > div button:hover {
+  color: #333;
+  background-color: transparent;
+}
+
+.auth-form > button[type="submit"] {
   padding: 10px 16px;
   background-color: #0366d6;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  margin-top: 8px;
 }
 
-.auth-form button:hover {
+.auth-form > button[type="submit"]:hover {
   background-color: #024ea2;
 }
 

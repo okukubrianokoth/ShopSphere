@@ -81,17 +81,13 @@ export default function Cart() {
       alert("Cart is empty!");
       return;
     }
-
     console.log("Cart items:", cart);
-
     const userData = localStorage.getItem("user");
     console.log("Raw user data from localStorage:", userData);
-    
     if (!userData) {
       alert("You must be logged in to place an order.");
       return;
     }
-
     const parsedData = JSON.parse(userData);
     console.log("Parsed user data:", parsedData);
     

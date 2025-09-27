@@ -7,42 +7,34 @@ export default function Products() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
-
-  // Get current user
   const getCurrentUser = () => {
     const userData = localStorage.getItem("user");
     if (!userData) return null;
     
     const parsedData = JSON.parse(userData);
-    // Handle both structures: direct user object or nested user object
     return parsedData.user || parsedData;
   };
 
-  // Get user-specific cart key
   const getCartKey = () => {
     const user = getCurrentUser();
     if (!user || !user.id) {
-      console.log("User or user.id not found:", user); // Debug log
+      console.log("User or user.id not found:", user); 
       return null;
     }
-    return `cart_${user.id}`; // Create user-specific cart key
+    return `cart_${user.id}`;
   };
 
-  // Fetch products from backend on load
   useEffect(() => {
-    fetch("http://localhost:5555/api/products") // Backend endpoint
+    fetch("http://localhost:5555/api/products")
       .then(res => res.json())
       .then(data => {
-        // Shuffle products randomly
         const shuffled = data.sort(() => Math.random() - 0.5);
         setProducts(shuffled);
       })
       .catch(err => console.error(err));
   }, []);
 
-  // Add product to user-specific cart in localStorage
   function addToCart(product) {
-    // Check if user is logged in
     const user = getCurrentUser();
     if (!user) {
       alert("Please login to add items to cart");
@@ -55,28 +47,19 @@ export default function Products() {
       alert("Unable to add to cart. Please login again.");
       return;
     }
-
-    // Get user-specific cart
     const cart = JSON.parse(localStorage.getItem(cartKey) || "[]");
-    
-    // Check if product already exists in cart
     const existingItem = cart.find(item => item.id === product.id);
     
     if (existingItem) {
-      // If product exists, increase quantity
       existingItem.quantity = (existingItem.quantity || 1) + 1;
       alert(`${product.name} quantity increased in cart!`);
     } else {
-      // If new product, add with quantity 1
       cart.push({ ...product, quantity: 1 });
       alert(`${product.name} added to cart!`);
     }
     
-    // Save to user-specific cart
     localStorage.setItem(cartKey, JSON.stringify(cart));
   }
-
-  // Filter products by search input
   const filtered = products.filter(
     p =>
       p.name.toLowerCase().includes(search.toLowerCase()) ||
