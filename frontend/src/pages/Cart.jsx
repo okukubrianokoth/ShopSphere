@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Plus, Minus, Trash, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import "../styles/cart.css";
+import "/home/brian-okuku/Documents/ShopSphere/frontend/src/styles/cart.css";
 
 export default function Cart() {
   const [cart, setCart] = useState([]);

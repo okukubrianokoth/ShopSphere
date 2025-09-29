@@ -3,8 +3,8 @@ import { User, Mail, Lock } from "lucide-react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "/home/walid/ShopSphere/frontend/src/context/AuthContext.jsx";
-import "../styles/login.css";
+import { useAuth } from "/home/brian-okuku/Documents/ShopSphere/frontend/src/context/AuthContext.jsx";
+import "/home/brian-okuku/Documents/ShopSphere/frontend/src/styles/login.css";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);

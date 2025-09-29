@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "/home/walid/ShopSphere/frontend/src/styles/profile.css";
+import "/home/brian-okuku/Documents/ShopSphere/frontend/src/styles/profile.css";
 
 export default function Profile() {
   const [user, setUser] = useState(null);

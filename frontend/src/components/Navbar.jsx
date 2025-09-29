@@ -2,18 +2,18 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, User } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import "/home/walid/ShopSphere/frontend/src/styles/navbar.css";
+import "../styles/navbar.css";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const isLoggedIn = !!user;
+  const isAdmin = user?.is_admin;
 
   const handleLogout = () => {
-    logout(); 
+    logout();
     navigate("/auth");
   };
-
-  const isLoggedIn = !!user;
 
   return (
     <nav className="navbar">
@@ -22,6 +22,11 @@ export default function Navbar() {
         <Link to="/">Home</Link>
         <Link to="/products">Products</Link>
         <Link to="/cart"><ShoppingCart size={20} /></Link>
+
+        {isAdmin && (
+          <Link to="/admin" style={{ color: "#ff0000", fontWeight: "bold" }}>Admin</Link>
+        )}
+
         {isLoggedIn ? (
           <>
             <Link to="/profile"><User size={20} /></Link>
@@ -34,3 +39,4 @@ export default function Navbar() {
     </nav>
   );
 }
+a

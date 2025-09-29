@@ -1,18 +1,13 @@
-# backend/routes/auth.py
-
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta
-
 from backend.models import db, User
 from backend.schemas import user_schema
 from backend.utils.auth_utils import hash_password, check_password
 
-# Remove url_prefix here
 auth_bp = Blueprint("auth", __name__)
 
-
-# Register: create new user
+# Register new user
 @auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json() or {}
@@ -31,19 +26,26 @@ def register():
             username=username,
             email=email,
             password=hash_password(password),
+            is_admin=data.get("is_admin", False)  # default to regular user
         )
         db.session.add(new_user)
         db.session.commit()
 
         access_token = create_access_token(identity=new_user.id, expires_delta=timedelta(days=7))
-        return jsonify({"user": user_schema.dump(new_user), "access_token": access_token}), 201
+        return jsonify({
+            "user": {
+                **user_schema.dump(new_user),
+                "is_admin": new_user.is_admin
+            },
+            "access_token": access_token
+        }), 201
 
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Failed to create user", "detail": str(e)}), 500
 
 
-# Login: issue JWT token (email or username)
+# Login
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json() or {}
@@ -58,19 +60,28 @@ def login():
         return jsonify({"error": "Invalid credentials"}), 401
 
     access_token = create_access_token(identity=user.id, expires_delta=timedelta(days=7))
-    return jsonify({"user": user_schema.dump(user), "access_token": access_token}), 200
+    return jsonify({
+        "user": {
+            **user_schema.dump(user),
+            "is_admin": user.is_admin
+        },
+        "access_token": access_token
+    }), 200
 
 
-# Get current logged-in user's profile
+# Current user profile
 @auth_bp.route("/me", methods=["GET"])
 @jwt_required()
 def me():
     user_id = get_jwt_identity()
     user = User.query.get_or_404(user_id)
-    return jsonify(user_schema.dump(user)), 200  # Fixed: use jsonify + dump
+    return jsonify({
+        **user_schema.dump(user),
+        "is_admin": user.is_admin
+    }), 200
 
 
-# Update current user's profile
+# Update current user profile
 @auth_bp.route("/me", methods=["PUT"])
 @jwt_required()
 def update_me():
@@ -78,33 +89,32 @@ def update_me():
     user = User.query.get_or_404(user_id)
     data = request.get_json() or {}
 
-    # Only allow updating certain fields
     username = data.get("username")
     email = data.get("email")
     password = data.get("password")
 
-    if username:
-        if User.query.filter(User.username == username, User.id != user.id).first():
-            return jsonify({"error": "Username already used"}), 400
-        user.username = username
+    if username and User.query.filter(User.username == username, User.id != user.id).first():
+        return jsonify({"error": "Username already used"}), 400
+    if username: user.username = username
 
-    if email:
-        if User.query.filter(User.email == email, User.id != user.id).first():
-            return jsonify({"error": "Email already used"}), 400
-        user.email = email
+    if email and User.query.filter(User.email == email, User.id != user.id).first():
+        return jsonify({"error": "Email already used"}), 400
+    if email: user.email = email
 
-    if password:
-        user.password = hash_password(password)
+    if password: user.password = hash_password(password)
 
     try:
         db.session.commit()
-        return jsonify(user_schema.dump(user)), 200  # Fixed: use jsonify + dump
+        return jsonify({
+            **user_schema.dump(user),
+            "is_admin": user.is_admin
+        }), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Could not update profile", "detail": str(e)}), 500
 
 
-# Delete current user account
+# Delete current user
 @auth_bp.route("/me", methods=["DELETE"])
 @jwt_required()
 def delete_me():

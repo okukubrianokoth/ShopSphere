@@ -1,7 +1,7 @@
 import React from "react";
 import { Info, Box, Star, Truck, CreditCard, Smile } from "lucide-react";
 import Footer from "../components/Footer"; 
-import "../styles/home.css";
+import "/home/brian-okuku/Documents/ShopSphere/frontend/src/styles/home.css";
 
 export default function Home() {
   return (

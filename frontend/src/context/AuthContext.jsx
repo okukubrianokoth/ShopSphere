@@ -1,14 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -19,18 +12,18 @@ export const AuthProvider = ({ children }) => {
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-      } catch (error) {
-        console.error('Error parsing stored user:', error);
-        localStorage.removeItem('user'); 
+        setUser(parsedUser.user || parsedUser);
+      } catch {
+        localStorage.removeItem('user');
       }
     }
     setLoading(false);
   }, []);
 
   const login = (userData) => {
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
+    const userWithAdmin = { ...userData.user, is_admin: userData.user.is_admin || false };
+    localStorage.setItem('user', JSON.stringify({ ...userData, user: userWithAdmin }));
+    setUser(userWithAdmin);
   };
 
   const logout = () => {
@@ -38,20 +31,10 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const isAuthenticated = () => {
-    return user !== null;
-  };
-
-  const value = {
-    user,
-    login,
-    logout,
-    isAuthenticated,
-    loading
-  };
+  const isAuthenticated = () => !!user;
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ user, login, logout, isAuthenticated, loading }}>
       {children}
     </AuthContext.Provider>
   );

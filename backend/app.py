@@ -44,3 +44,8 @@ def create_app():
         return {"message": "ShopSphere API is running"}
 
     return app
+
+# Only run the app directly if this is the main module
+if __name__ == "__main__":
+    app = create_app()
+    app.run(port=5555)
