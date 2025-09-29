@@ -3,7 +3,7 @@ import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "/home/walid/ShopSphere/frontend/src/context/AuthContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";   // ✅ fixed path
 import "../styles/login.css";
 
 export default function AuthPage() {
@@ -66,9 +66,8 @@ export default function AuthPage() {
 
       if (res.ok) {
         alert("Account created successfully! Please login.");
-        resetForm(); // Clear the signup form
-        setIsLogin(true); // Switch to login tab
-        // Reset password visibility state
+        resetForm(); 
+        setIsLogin(true); 
         setShowPassword(false);
       } else {
         alert(data.error || "Signup failed.");
@@ -119,7 +118,7 @@ export default function AuthPage() {
           className={isLogin ? "active" : ""}
           onClick={() => {
             setIsLogin(true);
-            setShowPassword(false); // Reset password visibility when switching tabs
+            setShowPassword(false);
           }}
         >
           Login
@@ -128,7 +127,7 @@ export default function AuthPage() {
           className={!isLogin ? "active" : ""}
           onClick={() => {
             setIsLogin(false);
-            setShowPassword(false); // Reset password visibility when switching tabs
+            setShowPassword(false);
           }}
         >
           Signup
@@ -137,7 +136,7 @@ export default function AuthPage() {
 
       {isLogin ? (
         <Formik
-          key="login" // Force re-render when switching tabs to clear autofill
+          key="login"
           initialValues={loginInitial}
           validationSchema={loginSchema}
           onSubmit={handleLogin}
@@ -148,7 +147,7 @@ export default function AuthPage() {
               <Field 
                 type="text" 
                 name="emailOrUsername" 
-                autoComplete="username" // Help browsers with proper autofill
+                autoComplete="username" 
               />
               <ErrorMessage name="emailOrUsername" component="div" className="error" />
             </label>
@@ -164,7 +163,7 @@ export default function AuthPage() {
         </Formik>
       ) : (
         <Formik
-          key="signup" // Force re-render when switching tabs to clear autofill
+          key="signup"
           initialValues={signupInitial}
           validationSchema={signupSchema}
           onSubmit={handleSignup}
@@ -172,21 +171,13 @@ export default function AuthPage() {
           <Form className="auth-form">
             <label>
               <User size={18} /> Username
-              <Field 
-                type="text" 
-                name="username" 
-                autoComplete="username" // Help browsers with proper autofill
-              />
+              <Field type="text" name="username" autoComplete="username" />
               <ErrorMessage name="username" component="div" className="error" />
             </label>
 
             <label>
               <Mail size={18} /> Email
-              <Field 
-                type="email" 
-                name="email" 
-                autoComplete="email" // Help browsers with proper autofill
-              />
+              <Field type="email" name="email" autoComplete="email" />
               <ErrorMessage name="email" component="div" className="error" />
             </label>
 

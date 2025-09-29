@@ -1,6 +1,6 @@
 import React from "react";
 import { Mail, Phone, MapPin, Facebook, Twitter, Instagram } from "lucide-react";
-import "/home/walid/ShopSphere/frontend/src/styles/Footer.css";
+import "../styles/Footer.css";   // ✅ fixed path
 
 export default function Footer() {
   return (

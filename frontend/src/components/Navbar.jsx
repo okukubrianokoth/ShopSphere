@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, User } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import "/home/walid/ShopSphere/frontend/src/styles/navbar.css";
+import "../styles/navbar.css";   // ✅ fixed path
 
 export default function Navbar() {
   const navigate = useNavigate();

@@ -1,22 +1,22 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "/home/walid/ShopSphere/frontend/src/context/AuthContext.jsx"; 
+import { AuthProvider } from "../context/AuthContext.jsx"; 
 
 // Components
-import Navbar from "/home/walid/ShopSphere/frontend/src/components/Navbar.jsx";
+import Navbar from "../components/Navbar.jsx";
 
-// Pages
-import Home from "/home/walid/ShopSphere/frontend/src/pages/Home.jsx";
-import Products from "/home/walid/ShopSphere/frontend/src/pages/Products.jsx";
-import Cart from "/home/walid/ShopSphere/frontend/src/pages/Cart.jsx";
-import Profile from "/home/walid/ShopSphere/frontend/src/pages/Profile.jsx";
-import AuthPage from "/home/walid/ShopSphere/frontend/src/pages/signin.jsx";
+// Pages (these are in the same folder as app.jsx)
+import Home from "./Home.jsx";
+import Products from "./Products.jsx";
+import Cart from "./Cart.jsx";
+import Profile from "./Profile.jsx";
+import AuthPage from "./signin.jsx";
 
 function App() {
   return (
-    <AuthProvider> 
+    <AuthProvider>
       <Router>
-        <Navbar /> 
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />

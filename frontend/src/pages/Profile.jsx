@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "/home/walid/ShopSphere/frontend/src/styles/profile.css";
+import "../styles/profile.css";  // ✅ fixed import path
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -82,6 +82,7 @@ export default function Profile() {
     
     fetchProfile();
   }, []);
+
   useEffect(() => {
     const token = getToken();
     if (!token) return;
