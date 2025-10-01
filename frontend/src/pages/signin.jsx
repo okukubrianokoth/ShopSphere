@@ -66,9 +66,8 @@ export default function AuthPage() {
 
       if (res.ok) {
         alert("Account created successfully! Please login.");
-        resetForm(); // Clear the signup form
-        setIsLogin(true); // Switch to login tab
-        // Reset password visibility state
+        resetForm(); 
+                setIsLogin(true);
         setShowPassword(false);
       } else {
         alert(data.error || "Signup failed.");
@@ -119,7 +118,7 @@ export default function AuthPage() {
           className={isLogin ? "active" : ""}
           onClick={() => {
             setIsLogin(true);
-            setShowPassword(false); // Reset password visibility when switching tabs
+            setShowPassword(false); 
           }}
         >
           Login
@@ -128,7 +127,7 @@ export default function AuthPage() {
           className={!isLogin ? "active" : ""}
           onClick={() => {
             setIsLogin(false);
-            setShowPassword(false); // Reset password visibility when switching tabs
+            setShowPassword(false); 
           }}
         >
           Signup
@@ -137,7 +136,7 @@ export default function AuthPage() {
 
       {isLogin ? (
         <Formik
-          key="login" // Force re-render when switching tabs to clear autofill
+          key="login"
           initialValues={loginInitial}
           validationSchema={loginSchema}
           onSubmit={handleLogin}
@@ -148,7 +147,7 @@ export default function AuthPage() {
               <Field 
                 type="text" 
                 name="emailOrUsername" 
-                autoComplete="username" // Help browsers with proper autofill
+                autoComplete="username" 
               />
               <ErrorMessage name="emailOrUsername" component="div" className="error" />
             </label>
@@ -164,7 +163,7 @@ export default function AuthPage() {
         </Formik>
       ) : (
         <Formik
-          key="signup" // Force re-render when switching tabs to clear autofill
+          key="signup" 
           initialValues={signupInitial}
           validationSchema={signupSchema}
           onSubmit={handleSignup}
@@ -175,7 +174,7 @@ export default function AuthPage() {
               <Field 
                 type="text" 
                 name="username" 
-                autoComplete="username" // Help browsers with proper autofill
+                autoComplete="username"
               />
               <ErrorMessage name="username" component="div" className="error" />
             </label>
@@ -185,7 +184,7 @@ export default function AuthPage() {
               <Field 
                 type="email" 
                 name="email" 
-                autoComplete="email" // Help browsers with proper autofill
+                autoComplete="email"
               />
               <ErrorMessage name="email" component="div" className="error" />
             </label>

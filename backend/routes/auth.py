@@ -7,12 +7,7 @@ from datetime import timedelta
 from backend.models import db, User
 from backend.schemas import user_schema
 from backend.utils.auth_utils import hash_password, check_password
-
-# Remove url_prefix here
 auth_bp = Blueprint("auth", __name__)
-
-
-# Register: create new user
 @auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json() or {}
@@ -41,9 +36,6 @@ def register():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Failed to create user", "detail": str(e)}), 500
-
-
-# Login: issue JWT token (email or username)
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json() or {}
@@ -59,18 +51,12 @@ def login():
 
     access_token = create_access_token(identity=user.id, expires_delta=timedelta(days=7))
     return jsonify({"user": user_schema.dump(user), "access_token": access_token}), 200
-
-
-# Get current logged-in user's profile
 @auth_bp.route("/me", methods=["GET"])
 @jwt_required()
 def me():
     user_id = get_jwt_identity()
     user = User.query.get_or_404(user_id)
-    return jsonify(user_schema.dump(user)), 200  # Fixed: use jsonify + dump
-
-
-# Update current user's profile
+    return jsonify(user_schema.dump(user)), 200 
 @auth_bp.route("/me", methods=["PUT"])
 @jwt_required()
 def update_me():
@@ -78,7 +64,7 @@ def update_me():
     user = User.query.get_or_404(user_id)
     data = request.get_json() or {}
 
-    # Only allow updating certain fields
+
     username = data.get("username")
     email = data.get("email")
     password = data.get("password")
@@ -98,13 +84,13 @@ def update_me():
 
     try:
         db.session.commit()
-        return jsonify(user_schema.dump(user)), 200  # Fixed: use jsonify + dump
+        return jsonify(user_schema.dump(user)), 200  
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Could not update profile", "detail": str(e)}), 500
 
 
-# Delete current user account
+
 @auth_bp.route("/me", methods=["DELETE"])
 @jwt_required()
 def delete_me():

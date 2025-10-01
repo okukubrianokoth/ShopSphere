@@ -52,7 +52,7 @@
   box-sizing: border-box;
 }
 
-/* Password field container styling */
+
 .auth-form label > div {
   position: relative;
   margin-top: 6px;
@@ -63,7 +63,7 @@
   padding-right: 40px;
 }
 
-/* Eye icon button styling */
+
 .auth-form label > div button {
   position: absolute;
   right: 8px;

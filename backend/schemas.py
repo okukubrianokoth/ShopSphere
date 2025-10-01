@@ -7,31 +7,25 @@ class ProductSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Product
         load_instance = True
-
-# OrderItem Schema - explicitly include product
 class OrderItemSchema(SQLAlchemyAutoSchema):
-    product = fields.Nested(ProductSchema)  # Explicitly nest product
+    product = fields.Nested(ProductSchema)  
     
     class Meta:
         model = OrderItem
         load_instance = True
-
-# Order Schema - explicitly include items
 class OrderSchema(SQLAlchemyAutoSchema):
-    items = fields.Nested(OrderItemSchema, many=True)  # Explicitly nest items
+    items = fields.Nested(OrderItemSchema, many=True)
     
     class Meta:
         model = Order
         load_instance = True
-
-# User Schema
 class UserSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = User
         load_instance = True
-        exclude = ('password',)  # Don't include password in responses
+        exclude = ('password',) 
 
-# Create schema instances
+
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 product_schema = ProductSchema()

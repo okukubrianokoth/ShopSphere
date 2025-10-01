@@ -18,7 +18,13 @@ bcrypt = Bcrypt()
 def create_app():
     app = Flask(__name__)
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///shopsphere.db")
+    if os.getenv('RENDER'):
+        app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+        if app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgres://"):
+            app.config["SQLALCHEMY_DATABASE_URI"] = app.config["SQLALCHEMY_DATABASE_URI"].replace("postgres://", "postgresql://", 1)
+    else:
+        app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///shopsphere.db")
+
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "super-secret-key")
 
@@ -26,19 +32,16 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
     bcrypt.init_app(app)
-    CORS(app)
 
+    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
+    CORS(app, origins=[frontend_url], supports_credentials=True)
     from backend import models
-
     from backend.routes.products import products_bp
     from backend.routes.auth import auth_bp
     from backend.routes.orders import orders_bp
-
     app.register_blueprint(products_bp, url_prefix="/api/products")
     app.register_blueprint(auth_bp, url_prefix="/api/users") 
     app.register_blueprint(orders_bp, url_prefix="/api/orders")
-
-
     @app.route("/")
     def index():
         return {"message": "ShopSphere API is running"}
