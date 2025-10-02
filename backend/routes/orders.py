@@ -1,9 +1,9 @@
 # backend/routes/orders.py
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from backend.app import db
-from backend.models import Order, OrderItem, Product
-from backend.schemas import order_schema, orders_schema
+from app import db
+from models import Order, OrderItem, Product
+from schemas import order_schema, orders_schema
 from sqlalchemy.orm import joinedload
 
 orders_bp = Blueprint("orders", __name__)

@@ -4,9 +4,9 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta
 
-from backend.models import db, User
-from backend.schemas import user_schema
-from backend.utils.auth_utils import hash_password, check_password
+from models import db, User
+from schemas import user_schema
+from utils.auth_utils import hash_password, check_password
 auth_bp = Blueprint("auth", __name__)
 @auth_bp.route("/register", methods=["POST"])
 def register():
