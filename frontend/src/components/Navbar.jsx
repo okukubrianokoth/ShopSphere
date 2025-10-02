@@ -9,7 +9,7 @@ export default function Navbar() {
   const { user, logout } = useAuth();
 
   const handleLogout = () => {
-    logout(); 
+    logout();
     navigate("/auth");
   };
 
@@ -22,6 +22,11 @@ export default function Navbar() {
         <Link to="/">Home</Link>
         <Link to="/products">Products</Link>
         <Link to="/cart"><ShoppingCart size={20} /></Link>
+
+        {isLoggedIn && (
+          <Link to="/add-product">Add Product</Link>
+        )}
+
         {isLoggedIn ? (
           <>
             <Link to="/profile"><User size={20} /></Link>

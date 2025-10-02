@@ -4,13 +4,14 @@ import { AuthProvider } from "../context/AuthContext.jsx";
 
 // Components
 import Navbar from "../components/Navbar.jsx";
+import Login from "../components/Login.jsx";
 
-// Pages (these are in the same folder as app.jsx)
+// Pages
 import Home from "./Home.jsx";
 import Products from "./Products.jsx";
 import Cart from "./Cart.jsx";
 import Profile from "./Profile.jsx";
-import AuthPage from "./signin.jsx";
+import AddProduct from "./AddProduct.jsx";
 
 function App() {
   return (
@@ -22,7 +23,8 @@ function App() {
           <Route path="/products" element={<Products />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/auth" element={<Login />} />
         </Routes>
       </Router>
     </AuthProvider>

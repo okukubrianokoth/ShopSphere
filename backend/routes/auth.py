@@ -8,11 +8,11 @@ from backend.models import db, User
 from backend.schemas import user_schema
 from backend.utils.auth_utils import hash_password, check_password
 
-# Remove url_prefix here
 auth_bp = Blueprint("auth", __name__)
 
-
+# -------------------------
 # Register: create new user
+# -------------------------
 @auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json() or {}
@@ -43,17 +43,19 @@ def register():
         return jsonify({"error": "Failed to create user", "detail": str(e)}), 500
 
 
-# Login: issue JWT token (email or username)
+# -------------------------
+# Login: email-only (merged)
+# -------------------------
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json() or {}
-    identifier = data.get("emailOrUsername")
+    email = data.get("email")
     password = data.get("password")
 
-    if not identifier or not password:
-        return jsonify({"error": "emailOrUsername and password required"}), 400
+    if not email or not password:
+        return jsonify({"error": "Email and password required"}), 400
 
-    user = User.query.filter((User.email == identifier) | (User.username == identifier)).first()
+    user = User.query.filter_by(email=email).first()
     if not user or not check_password(user.password, password):
         return jsonify({"error": "Invalid credentials"}), 401
 
@@ -61,16 +63,20 @@ def login():
     return jsonify({"user": user_schema.dump(user), "access_token": access_token}), 200
 
 
+# -------------------------
 # Get current logged-in user's profile
+# -------------------------
 @auth_bp.route("/me", methods=["GET"])
 @jwt_required()
 def me():
     user_id = get_jwt_identity()
     user = User.query.get_or_404(user_id)
-    return jsonify(user_schema.dump(user)), 200  # Fixed: use jsonify + dump
+    return jsonify(user_schema.dump(user)), 200
 
 
+# -------------------------
 # Update current user's profile
+# -------------------------
 @auth_bp.route("/me", methods=["PUT"])
 @jwt_required()
 def update_me():
@@ -78,7 +84,6 @@ def update_me():
     user = User.query.get_or_404(user_id)
     data = request.get_json() or {}
 
-    # Only allow updating certain fields
     username = data.get("username")
     email = data.get("email")
     password = data.get("password")
@@ -98,13 +103,15 @@ def update_me():
 
     try:
         db.session.commit()
-        return jsonify(user_schema.dump(user)), 200  # Fixed: use jsonify + dump
+        return jsonify(user_schema.dump(user)), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Could not update profile", "detail": str(e)}), 500
 
 
+# -------------------------
 # Delete current user account
+# -------------------------
 @auth_bp.route("/me", methods=["DELETE"])
 @jwt_required()
 def delete_me():

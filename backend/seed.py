@@ -1,88 +1,52 @@
-# backend/seed.py
-import random
-from faker import Faker
-from backend.app import create_app, db
-from backend.models import Product, User
-from backend.utils.auth_utils import hash_password
+import os
+from dotenv import load_dotenv
+from flask import Flask, jsonify
+from flask_cors import CORS
+from flask_migrate import Migrate
+from flask_jwt_extended import JWTManager
+from flask_bcrypt import Bcrypt
+from flask_sqlalchemy import SQLAlchemy
 
-fake = Faker()
+load_dotenv()
 
-# Categories & items
-CATEGORIES = ["Electronics", "Fashion", "Home Appliances", "Accessories"]
-ELECTRONICS = ["Phone", "Laptop", "Headphones", "Tablet", "Camera", "Smartwatch"]
-FASHION = ["T-Shirt", "Jeans", "Sneakers", "Jacket", "Dress", "Cap"]
-HOME_APPLIANCES = ["Blender", "Microwave", "Vacuum Cleaner", "Toaster", "Coffee Maker", "Air Fryer"]
-ACCESSORIES = ["Backpack", "Wallet", "Belt", "Sunglasses", "Watch", "Necklace"]
+db = SQLAlchemy()
+migrate = Migrate()
+jwt = JWTManager()
+bcrypt = Bcrypt()
 
-# Demo users
-DEMO_USERS = [
-    {"username": "alice", "email": "alice@example.com", "password": "password123"},
-    {"username": "bob", "email": "bob@example.com", "password": "password123"},
-    {"username": "charlie", "email": "charlie@example.com", "password": "password123"},
-]
+def create_app():
+    app = Flask(__name__)
 
-def generate_product(category):
-    if category == "Electronics":
-        name = f"{fake.company()} {random.choice(ELECTRONICS)}"
-        price = round(random.uniform(100, 2000), 2)
-    elif category == "Fashion":
-        name = f"{random.choice(FASHION)} by {fake.first_name()}"
-        price = round(random.uniform(10, 150), 2)
-    elif category == "Home Appliances":
-        name = f"{random.choice(HOME_APPLIANCES)} {fake.company()}"
-        price = round(random.uniform(50, 500), 2)
-    else:  # Accessories
-        name = f"{random.choice(ACCESSORIES)} {fake.word()}"
-        price = round(random.uniform(5, 80), 2)
+    # Database & JWT
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///shopsphere.db")
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "super-secret-key")
 
-    description = fake.sentence(nb_words=12)
-    image_seed = name.replace(" ", "_") + str(random.randint(1, 10000))
-    image_url = f"https://picsum.photos/seed/{image_seed}/400/300"
+    db.init_app(app)
+    migrate.init_app(app, db)
+    jwt.init_app(app)
+    bcrypt.init_app(app)
 
-    return Product(
-        name=name,
-        description=description,
-        price=price,
-        category=category,
-        image_url=image_url,
-        stock=random.randint(1, 100),
+    # CORS for frontend proxy
+    CORS(
+        app,
+        resources={r"/api/*": {"origins": ["http://localhost:5173"]}},
+        supports_credentials=True,
+        allow_headers=["Content-Type", "Authorization"],
+        methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"]
     )
 
-def seed_products(n=100):
-    app = create_app()
-    with app.app_context():
-        # Seed products
-        existing_names = {p.name for p in Product.query.all()}
-        products = []
-        while len(products) < n:
-            category = random.choice(CATEGORIES)
-            product = generate_product(category)
-            if product.name not in existing_names:
-                products.append(product)
-                existing_names.add(product.name)
-        db.session.bulk_save_objects(products)
-        db.session.commit()
-        print(f"✅ Added {len(products)} products successfully!")
+    # Import routes
+    from backend.routes.products import products_bp
+    from backend.routes.auth import auth_bp
+    from backend.routes.orders import orders_bp
 
-        # Delete old demo users first
-        for user_data in DEMO_USERS:
-            existing_user = User.query.filter(
-                (User.email == user_data["email"]) | (User.username == user_data["username"])
-            ).first()
-            if existing_user:
-                db.session.delete(existing_user)
-        db.session.commit()
+    app.register_blueprint(products_bp, url_prefix="/api/products")
+    app.register_blueprint(auth_bp, url_prefix="/api/users")
+    app.register_blueprint(orders_bp, url_prefix="/api/orders")
 
-        # Seed demo users with fresh password hashes
-        for user_data in DEMO_USERS:
-            user = User(
-                username=user_data["username"],
-                email=user_data["email"],
-                password=hash_password(user_data["password"])
-            )
-            db.session.add(user)
-        db.session.commit()
-        print("✅ Demo users seeded successfully!")
+    @app.route("/")
+    def index():
+        return {"message": "ShopSphere API is running"}
 
-if __name__ == "__main__":
-    seed_products(100)
+    return app
