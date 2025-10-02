@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
-from models import Product
-from schemas import products_schema, product_schema
+from backend.models import Product
+from backend.schemas import products_schema, product_schema
 
 products_bp = Blueprint("products", __name__)
 @products_bp.route("/", methods=["GET"])
